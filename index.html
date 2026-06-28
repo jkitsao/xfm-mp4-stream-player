@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>105.5 XFM - Real Music</title>
+    <style>
+        :root {
+            --xfm-red: #e3182d; /* Matching the red from the logo */
+            --bg-dark: #121212;
+            --text-light: #f4f4f4;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Arial Black', Impact, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .player-container {
+            background: #1e1e1e;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            width: 320px;
+            border-top: 5px solid var(--xfm-red);
+        }
+
+        .logo-container img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .status.live {
+            color: var(--xfm-red);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .play-btn {
+            background-color: var(--xfm-red);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 50px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(227, 24, 45, 0.4);
+        }
+
+        .play-btn:hover {
+            background-color: #c01425;
+            transform: scale(1.05);
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .volume-slider {
+            width: 60%;
+            accent-color: var(--xfm-red);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="player-container">
+        <div class="logo-container">
+            <!-- Referencing your provided image exactly as named -->
+            <img src="xfm-image.png" alt="105.5 XFM Nairobi">
+        </div>
+        
+        <div id="status-text" class="status">OFF AIR</div>
+
+        <!-- The actual streaming audio element (Hidden from UI) -->
+        <audio id="xfm-stream" preload="none">
+            <!-- REPLACE THIS URL WITH YOUR NODE.JS STREAM URL -->
+            <source src="http://localhost:3000/stream" type="audio/mp4">
+            Your browser does not support the audio element.
+        </audio>
+
+        <div class="controls">
+            <button id="play-btn" class="play-btn">▶ TUNE IN</button>
+            
+            <div class="volume-control">
+                <span>🔈</span>
+                <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.8">
+                <span>🔊</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audioPlayer = document.getElementById('xfm-stream');
+        const playBtn = document.getElementById('play-btn');
+        const statusText = document.getElementById('status-text');
+        const volumeSlider = document.getElementById('volume-slider');
+
+        // Set initial volume
+        audioPlayer.volume = volumeSlider.value;
+
+        // Handle Play/Pause for a LIVE stream
+        playBtn.addEventListener('click', () => {
+            if (audioPlayer.paused) {
+                // Force load to jump to the live edge instead of old buffered audio
+                audioPlayer.load(); 
+                
+                audioPlayer.play().then(() => {
+                    playBtn.innerHTML = '⏸ PAUSE';
+                    statusText.innerHTML = '🔴 LIVE BROADCAST';
+                    statusText.classList.add('live');
+                }).catch(error => {
+                    console.error("Playback failed:", error);
+                    statusText.innerHTML = 'STREAM ERROR';
+                });
+            } else {
+                audioPlayer.pause();
+                playBtn.innerHTML = '▶ TUNE IN';
+                statusText.innerHTML = 'OFF AIR';
+                statusText.classList.remove('live');
+            }
+        });
+
+        // Handle Volume Changes
+        volumeSlider.addEventListener('input', (e) => {
+            audioPlayer.volume = e.target.value;
+        });
+    </script>
+</body>
+</html>
