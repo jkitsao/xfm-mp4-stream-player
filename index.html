@@ -6,85 +6,184 @@
     <title>105.5 XFM - Real Music</title>
     <style>
         :root {
-            --xfm-red: #e3182d; /* Matching the red from the logo */
-            --bg-dark: #121212;
+            --xfm-red: #e3182d;
+            --xfm-red-dark: #a31020;
+            --body-dark: #1c1c1c;
+            --body-darker: #141414;
+            --panel: #232323;
             --text-light: #f4f4f4;
+            --led-amber: #ffb300;
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            background-color: var(--bg-dark);
+            background: radial-gradient(ellipse at center, #2a2a2a 0%, #0c0c0c 100%);
             color: var(--text-light);
             font-family: 'Arial Black', Impact, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
 
-        .player-container {
-            background: #1e1e1e;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            text-align: center;
-            width: 320px;
-            border-top: 5px solid var(--xfm-red);
+        .radio-body {
+            background: linear-gradient(180deg, var(--body-dark), var(--body-darker));
+            padding: 24px;
+            border-radius: 22px;
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.7),
+                inset 0 1px 0 rgba(255,255,255,0.05),
+                inset 0 -2px 6px rgba(0,0,0,0.6);
+            width: 340px;
+            border: 1px solid #000;
         }
 
-        .logo-container img {
-            width: 100%;
-            max-width: 250px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        /* Brand strip */
+        .brand-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px 14px;
         }
 
-        .status {
-            font-size: 0.9rem;
+        .logo-img {
+            height: 38px;
+            width: auto;
+            border-radius: 4px;
+            display: block;
+        }
+
+        .brand-strip .tag {
+            font-size: 0.55rem;
+            color: #999;
             letter-spacing: 2px;
-            margin-bottom: 30px;
-            color: #888;
+            font-family: Arial, sans-serif;
             text-transform: uppercase;
         }
 
-        .status.live {
-            color: var(--xfm-red);
+        /* Speaker grille panel */
+        .grille-panel {
+            background: var(--panel);
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+            margin-bottom: 16px;
+        }
+
+        .grille {
+            height: 90px;
+            border-radius: 8px;
+            background-image: radial-gradient(circle, #111 1.6px, transparent 1.6px);
+            background-size: 9px 9px;
+            background-color: #1a1a1a;
+            box-shadow: inset 0 0 18px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grille::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 40%);
+        }
+
+        /* LED + status row */
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .led {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #4a1a1a;
+            box-shadow: inset 0 0 2px rgba(0,0,0,0.8);
+            transition: all 0.3s ease;
+        }
+
+        .led.on {
+            background: var(--xfm-red);
+            box-shadow: 0 0 8px 2px rgba(227,24,45,0.8), inset 0 0 2px rgba(0,0,0,0.4);
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
             0% { opacity: 1; }
-            50% { opacity: 0.4; }
+            50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
 
+        .status-text {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: #888;
+            text-transform: uppercase;
+            font-family: Arial, sans-serif;
+        }
+
+        .status-text.live { color: var(--xfm-red); }
+
+        /* Dial / tuner display */
+        .dial-display {
+            background: #0d0d0d;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 16px 0;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 6px;
+            border: 1px solid #000;
+        }
+
+        .dial-display .num {
+            font-size: 2.1rem;
+            color: var(--xfm-red);
+            text-shadow: 0 0 10px rgba(227,24,45,0.6);
+            letter-spacing: 1px;
+        }
+
+        .dial-display .unit {
+            font-size: 0.8rem;
+            color: #b33;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Controls */
         .controls {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
         }
 
         .play-btn {
-            background-color: var(--xfm-red);
+            background: linear-gradient(180deg, var(--xfm-red), var(--xfm-red-dark));
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 14px 30px;
+            font-size: 1.1rem;
             font-family: inherit;
             cursor: pointer;
             border-radius: 50px;
             text-transform: uppercase;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(227, 24, 45, 0.4);
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 var(--xfm-red-dark), 0 6px 14px rgba(227,24,45,0.4);
         }
 
-        .play-btn:hover {
-            background-color: #c01425;
-            transform: scale(1.05);
-        }
+        .play-btn:hover { filter: brightness(1.08); }
 
         .play-btn:active {
-            transform: scale(0.95);
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 var(--xfm-red-dark), 0 2px 8px rgba(227,24,45,0.4);
         }
 
         .volume-control {
@@ -92,6 +191,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            font-family: Arial, sans-serif;
         }
 
         .volume-slider {
@@ -102,23 +202,34 @@
 </head>
 <body>
 
-    <div class="player-container">
-        <div class="logo-container">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1ja4X1kS_ROfJqKxObz3tdGjRTKYIPaaNIFIPOTg5gIwhHEdCk33Gfy4&s=10" alt="105.5 XFM Nairobi">
-        </div>
-        
-        <div id="status-text" class="status">OFF AIR</div>
+    <div class="radio-body">
 
-        <!-- The actual streaming audio element (Hidden from UI) -->
+        <div class="brand-strip">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1ja4X1kS_ROfJqKxObz3tdGjRTKYIPaaNIFIPOTg5gIwhHEdCk33Gfy4&s=10" alt="105.5 XFM Nairobi" class="logo-img">
+            <span class="tag">Real Music</span>
+        </div>
+
+        <div class="grille-panel">
+            <div class="grille"></div>
+            <div class="status-row">
+                <span id="led" class="led"></span>
+                <span id="status-text" class="status-text">OFF AIR</span>
+            </div>
+        </div>
+
+        <div class="dial-display">
+            <span class="num">105.5</span>
+            <span class="unit">FM</span>
+        </div>
+
         <audio id="xfm-stream" preload="none">
-        
             <source src="http://localhost:3000/stream" type="audio/mp4">
             Your browser does not support the audio element.
         </audio>
 
         <div class="controls">
-            <button id="play-btn" class="play-btn">▶ TUNE IN</button>
-            
+            <button id="play-btn" class="play-btn">▶ Tune in</button>
+
             <div class="volume-control">
                 <span>🔈</span>
                 <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.8">
@@ -131,34 +242,33 @@
         const audioPlayer = document.getElementById('xfm-stream');
         const playBtn = document.getElementById('play-btn');
         const statusText = document.getElementById('status-text');
+        const led = document.getElementById('led');
         const volumeSlider = document.getElementById('volume-slider');
 
-        // Set initial volume
         audioPlayer.volume = volumeSlider.value;
 
-        // Handle Play/Pause for a LIVE stream
         playBtn.addEventListener('click', () => {
             if (audioPlayer.paused) {
-                // Force load to jump to the live edge instead of old buffered audio
-                audioPlayer.load(); 
-                
+                audioPlayer.load();
+
                 audioPlayer.play().then(() => {
-                    playBtn.innerHTML = '⏸ PAUSE';
-                    statusText.innerHTML = '🔴 LIVE BROADCAST';
+                    playBtn.innerHTML = '⏸ Pause';
+                    statusText.innerHTML = 'Live broadcast';
                     statusText.classList.add('live');
+                    led.classList.add('on');
                 }).catch(error => {
                     console.error("Playback failed:", error);
-                    statusText.innerHTML = 'STREAM ERROR';
+                    statusText.innerHTML = 'Stream error';
                 });
             } else {
                 audioPlayer.pause();
-                playBtn.innerHTML = '▶ TUNE IN';
-                statusText.innerHTML = 'OFF AIR';
+                playBtn.innerHTML = '▶ Tune in';
+                statusText.innerHTML = 'Off air';
                 statusText.classList.remove('live');
+                led.classList.remove('on');
             }
         });
 
-        // Handle Volume Changes
         volumeSlider.addEventListener('input', (e) => {
             audioPlayer.volume = e.target.value;
         });
